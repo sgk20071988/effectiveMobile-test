@@ -1,7 +1,9 @@
 package handlers
 
 import (
+	context "effectiveMobileTest/internal/context"
 	"effectiveMobileTest/internal/db"
+	repository "effectiveMobileTest/internal/repository"
 	"encoding/json"
 	"net/http"
 	"time"
@@ -12,7 +14,11 @@ import (
 func GetCars(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(db.Get())
+	if db, err := context.GetDB(); err != nil {
+		carRep := repository.Repository{DB: db}
+		json.NewEncoder(w).Encode(carRep.Get())
+	}
+
 }
 
 func GetCar(w http.ResponseWriter, r *http.Request) {
