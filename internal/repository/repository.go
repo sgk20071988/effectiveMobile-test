@@ -6,12 +6,12 @@ import (
 )
 
 type Repository struct {
-	db sql.DB
+	DB *sql.DB
 }
 
 func (r *Repository) Insert(car model.Car) error {
 	query := "insert into Cars (regNum,mark,model,owner) values ($1,$2,$3,$4)"
-	if _, err := r.db.Exec(
+	if _, err := r.DB.Exec(
 		query,
 		car.RegNum,
 		car.Mark,
@@ -23,10 +23,10 @@ func (r *Repository) Insert(car model.Car) error {
 	return nil
 }
 
-func (r *Repository) Get(limit, offset int) (cars []model.Car, e error) {
+func (r *Repository) GetCars(limit, offset int) (cars []model.Car, e error) {
 	query := "select regNum,mark,model,owner from Cars LIMIT $1 OFFSET $1"
 
-	rows, err := r.db.Query(
+	rows, err := r.DB.Query(
 		query,
 		limit,
 		offset,
@@ -53,9 +53,9 @@ func (r *Repository) Get(limit, offset int) (cars []model.Car, e error) {
 	return
 }
 
-func (r *Repository) Delete(regNum string) error {
+func (r *Repository) DeleteCar(regNum string) error {
 	query := "delete from Cars where regNum = $1"
-	if _, err := r.db.Exec(
+	if _, err := r.DB.Exec(
 		query,
 		regNum,
 	); err != nil {
