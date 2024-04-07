@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 	model "effectiveMobileTest/internal/model"
+	"strconv"
 
 	"github.com/huandu/go-sqlbuilder"
 )
@@ -26,13 +27,32 @@ func (r *Repository) Insert(car model.Car) error {
 	return nil
 }
 
-func (r *Repository) GetCars(limit, offset int, conds map[string]string) (cars []model.Car, e error) {
+func (r *Repository) GetCars(params map[string]string) (cars []model.Car, e error) {
 	sb := sqlbuilder.PostgreSQL.NewSelectBuilder()
 	sb.From("Cars")
 	sb.Select("regNum", "mark", "model", "owner")
-	sb.Limit(limit)
-	sb.Offset(offset)
-	for col, like := range conds {
+	limit, ok := params["limit"]
+	if ok {
+		liminInt, err := strconv.Atoi(limit)
+		if err != nil {
+			e = err
+			return
+		}
+		sb.Limit(liminInt)
+		delete(params, "limit")
+	}
+	offset, ok := params["offset"]
+	if ok {
+		offsetInt, err := strconv.Atoi(offset)
+		if err != nil {
+			e = err
+			return
+		}
+		sb.Offset(offsetInt)
+		delete(params, "offset")
+	}
+
+	for col, like := range params {
 		sb.Where(
 			sb.Like(col, like),
 		)

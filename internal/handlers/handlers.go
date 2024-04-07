@@ -7,7 +7,6 @@ import (
 	repository "effectiveMobileTest/internal/repository"
 	"encoding/json"
 	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -22,19 +21,8 @@ func GetCars(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	carRep := repository.Repository{DB: db}
-	var limit, offset int
-	limit, err = strconv.Atoi(params["limit"])
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	offset, err = strconv.Atoi(params["offset"])
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
 	var cars []model.Car
-	cars, err = carRep.GetCars(limit, offset)
+	cars, err = carRep.GetCars(params)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
