@@ -63,3 +63,8 @@ func (r *Repository) DeleteCar(regNum string) error {
 	}
 	return nil
 }
+
+func (r *Repository) Update(regNum string, args map[string]string)
+{
+	
+}
