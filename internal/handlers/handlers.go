@@ -36,7 +36,7 @@ func GetCars(w http.ResponseWriter, r *http.Request) {
 	}
 	carRep := repository.Repository{DB: db}
 	var cars []model.Car
-	cars, err = carRep.GetCars(filters)
+	cars, err = carRep.GetCars(params, filters)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -68,15 +68,44 @@ func InsertCar(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateCar(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	params := mux.Vars(r)
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	regNum, ok := params["regNum"]
+	if !ok {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	data := map[string]string{}
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&data)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 	db, err := context.GetDB()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	carRep := repository.Repository{DB: db}
-	carRep.Update(params)
+	carRep.Update(regNum, params)
+}
+
+func DeleteCar(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	regNum, ok := params["regNum"]
+	if !ok {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	db, err := context.GetDB()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	carRep := repository.Repository{DB: db}
+	carRep.DeleteCar(regNum)
 }
 
 func GetCar(w http.ResponseWriter, r *http.Request) {

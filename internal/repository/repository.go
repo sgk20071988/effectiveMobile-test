@@ -3,7 +3,6 @@ package repository
 import (
 	"database/sql"
 	model "effectiveMobileTest/internal/model"
-	"fmt"
 	"strconv"
 
 	"github.com/huandu/go-sqlbuilder"
@@ -28,7 +27,7 @@ func (r *Repository) Insert(car model.Car) error {
 	return nil
 }
 
-func (r *Repository) GetCars(params map[string]string) (cars []model.Car, e error) {
+func (r *Repository) GetCars(params map[string]string, filters map[string]string) (cars []model.Car, e error) {
 	sb := sqlbuilder.PostgreSQL.NewSelectBuilder()
 	sb.From("Cars")
 	sb.Select("regNum", "mark", "model", "owner")
@@ -40,7 +39,6 @@ func (r *Repository) GetCars(params map[string]string) (cars []model.Car, e erro
 			return
 		}
 		sb.Limit(liminInt)
-		delete(params, "limit")
 	}
 	offset, ok := params["offset"]
 	if ok {
@@ -50,10 +48,9 @@ func (r *Repository) GetCars(params map[string]string) (cars []model.Car, e erro
 			return
 		}
 		sb.Offset(offsetInt)
-		delete(params, "offset")
 	}
 
-	for col, like := range params {
+	for col, like := range filters {
 		sb.Where(
 			sb.Like(col, like),
 		)
@@ -102,12 +99,7 @@ func (r *Repository) DeleteCar(regNum string) error {
 	return nil
 }
 
-func (r *Repository) Update(update map[string]string) error {
-	regNum, ok := update["regNum"]
-	if !ok {
-		return fmt.Errorf("no registration number")
-	}
-	delete(update, "regNum")
+func (r *Repository) Update(regNum string, update map[string]string) error {
 	ub := sqlbuilder.PostgreSQL.NewUpdateBuilder()
 	ub.Update("Cars")
 	for col, val := range update {
@@ -118,7 +110,6 @@ func (r *Repository) Update(update map[string]string) error {
 	ub.Where(
 		ub.Equal("regNum", regNum),
 	)
-
 	query, args := ub.Build()
 	if _, err := r.DB.Exec(
 		query,
