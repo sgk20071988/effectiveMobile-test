@@ -14,7 +14,13 @@ import (
 
 func GetCars(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	params := mux.Vars(r)
+	filters := r.URL.Query().Get("filters")
+	params := map[string]string{}
+	err := json.Unmarshal([]byte(filters), &params)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 	db, err := context.GetDB()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -33,7 +39,6 @@ func GetCars(w http.ResponseWriter, r *http.Request) {
 
 func InsertCar(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	params := mux.Vars(r)
 	decoder := json.NewDecoder(r.Body)
 	var car model.Car
 	err := decoder.Decode(&car)
