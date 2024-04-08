@@ -4,5 +4,6 @@ type Car struct {
 	RegNum string `json: regNum`
 	Mark   string `json: mark`
 	Model  string `json: model`
-	Owner  string `json: owner`
+	Owner  Person `json: owner`
+	Year   int    `json: year`
 }

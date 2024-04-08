@@ -24,7 +24,7 @@ var routes = Routes{
 	Route{
 		"InsertCar",
 		"POST",
-		"/newcar",
+		"/newcar/{id}",
 		handlers.InsertCar,
 	},
 }
