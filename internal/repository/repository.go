@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 	model "effectiveMobileTest/internal/model"
+	"fmt"
 	"strconv"
 
 	"github.com/huandu/go-sqlbuilder"
@@ -101,7 +102,12 @@ func (r *Repository) DeleteCar(regNum string) error {
 	return nil
 }
 
-func (r *Repository) Update(regNum string, update map[string]string) error {
+func (r *Repository) Update(update map[string]string) error {
+	regNum, ok := update["regNum"]
+	if !ok {
+		return fmt.Errorf("no registration number")
+	}
+	delete(update, "regNum")
 	ub := sqlbuilder.PostgreSQL.NewUpdateBuilder()
 	ub.Update("Cars")
 	for col, val := range update {

@@ -31,6 +31,51 @@ func GetCars(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
+func InsertCar(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	params := mux.Vars(r)
+	db, err := context.GetDB()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	carRep := repository.Repository{DB: db}
+	car := model.Car{}
+	regNum, ok := params["regNum"]
+	if ok {
+		car.RegNum = regNum
+	}
+	owner, ok := params["owner"]
+	if ok {
+		car.Owner = owner
+	}
+	model, ok := params["model"]
+	if ok {
+		car.Model = model
+	}
+	mark, ok := params["mark"]
+	if ok {
+		car.Mark = mark
+	}
+	err = carRep.Insert(car)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+}
+
+func UpdateCar(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	params := mux.Vars(r)
+	db, err := context.GetDB()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	carRep := repository.Repository{DB: db}
+	carRep.Update(params)
+}
+
 func GetCar(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
