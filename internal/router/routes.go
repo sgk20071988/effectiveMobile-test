@@ -22,9 +22,27 @@ var routes = Routes{
 		handlers.GetCars,
 	},
 	Route{
+		"GetCar",
+		"GET",
+		"/cars/{regNum}",
+		handlers.GetCar,
+	},
+	Route{
 		"InsertCar",
 		"POST",
 		"/cars/",
 		handlers.InsertCar,
+	},
+	Route{
+		"UpdateCar",
+		"PATCH",
+		"/cars/{regNum}",
+		handlers.UpdateCar,
+	},
+	Route{
+		"DeleteCar",
+		"DELETE",
+		"/cars/{regNum}",
+		handlers.DeleteCar,
 	},
 }
