@@ -34,29 +34,19 @@ func GetCars(w http.ResponseWriter, r *http.Request) {
 func InsertCar(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	params := mux.Vars(r)
+	decoder := json.NewDecoder(r.Body)
+	var car model.Car
+	err := decoder.Decode(&car)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 	db, err := context.GetDB()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	carRep := repository.Repository{DB: db}
-	car := model.Car{}
-	regNum, ok := params["regNum"]
-	if ok {
-		car.RegNum = regNum
-	}
-	owner, ok := params["owner"]
-	if ok {
-		car.Owner = owner
-	}
-	model, ok := params["model"]
-	if ok {
-		car.Model = model
-	}
-	mark, ok := params["mark"]
-	if ok {
-		car.Mark = mark
-	}
 	err = carRep.Insert(car)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

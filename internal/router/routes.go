@@ -18,13 +18,13 @@ var routes = Routes{
 	Route{
 		"GetCars",
 		"GET",
-		"/cars",
+		"/cars/",
 		handlers.GetCars,
 	},
 	Route{
 		"InsertCar",
 		"POST",
-		"/newcar/{id}",
+		"/cars/",
 		handlers.InsertCar,
 	},
 }
