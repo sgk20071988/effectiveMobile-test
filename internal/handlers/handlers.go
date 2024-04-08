@@ -14,12 +14,20 @@ import (
 
 func GetCars(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	filters := r.URL.Query().Get("filters")
-	params := map[string]string{}
-	err := json.Unmarshal([]byte(filters), &params)
+	filters := map[string]string{}
+	err := json.Unmarshal([]byte(r.URL.Query().Get("filters")), &filters)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
+	}
+	params := map[string]string{}
+	limit := r.URL.Query().Get("limit")
+	if len(limit) > 0 {
+		params["limit"] = limit
+	}
+	offset := r.URL.Query().Get("offset")
+	if len(offset) > 0 {
+		params["offset"] = offset
 	}
 	db, err := context.GetDB()
 	if err != nil {
@@ -28,7 +36,7 @@ func GetCars(w http.ResponseWriter, r *http.Request) {
 	}
 	carRep := repository.Repository{DB: db}
 	var cars []model.Car
-	cars, err = carRep.GetCars(params)
+	cars, err = carRep.GetCars(filters)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
