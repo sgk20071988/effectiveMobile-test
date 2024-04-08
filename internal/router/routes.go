@@ -21,4 +21,10 @@ var routes = Routes{
 		"/cars",
 		handlers.GetCars,
 	},
+	Route{
+		"InsertCar",
+		"POST",
+		"/newcar",
+		handlers.InsertCar,
+	},
 }
