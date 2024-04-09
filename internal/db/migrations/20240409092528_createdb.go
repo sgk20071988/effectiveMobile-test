@@ -15,7 +15,7 @@ func init() {
 
 func upCreatedb(ctx context.Context, tx *sql.Tx) error {
 	db := os.Getenv("DB")
-	user := os.Getenv("USER")
+	owner := os.Getenv("OWNER")
 	creatDB := fmt.Sprintf(
 		`CREATE DATABASE %v
 		WITH
@@ -23,10 +23,29 @@ func upCreatedb(ctx context.Context, tx *sql.Tx) error {
 		ENCODING = 'UTF8'
 		CONNECTION LIMIT = -1;`,
 		db,
-		user,
+		owner,
 	)
 	_, err := tx.ExecContext(ctx, creatDB)
-	return err
+	if err != nil {
+		return err
+	}
+
+	user := os.Getenv("USER")
+	password := os.Getenv("PASSWORD")
+
+	addUser := fmt.Sprintf(
+		"CREATE USER %v WITH PASSWORD '%v';",
+		user,
+		password,
+	)
+
+	_, err = tx.ExecContext(ctx, addUser)
+	if err != nil {
+		return err
+	}
+
+	return nil
+
 }
 
 func downCreatedb(ctx context.Context, tx *sql.Tx) error {
