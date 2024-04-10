@@ -3,8 +3,11 @@ package main
 import (
 	"database/sql"
 	"effectiveMobileTest/internal/config"
+	appContext "effectiveMobileTest/internal/context"
+	"effectiveMobileTest/internal/router"
 	"embed"
 	"fmt"
+	"net/http"
 	"os"
 
 	_ "github.com/jackc/pgx/v5/stdlib"
@@ -56,12 +59,13 @@ func main() {
 		dbPort,
 		dbName,
 	)
-	fmt.Println(dbSource)
 
 	db, err := sql.Open(dbDriver, dbSource)
 	if err != nil {
 		panic(err)
 	}
+
+	appContext.SetDB(db)
 
 	goose.SetBaseFS(embedMigrations)
 
@@ -72,4 +76,8 @@ func main() {
 	if err := goose.Up(db, "migrations"); err != nil {
 		panic(err)
 	}
+
+	r := router.NewRouter()
+
+	http.ListenAndServe(":8080", r)
 }

@@ -1,8 +1,11 @@
 package router
 
 import (
+	_ "effectiveMobileTest/cmd/api-server/docs"
 	"effectiveMobileTest/internal/handlers"
 	"net/http"
+
+	httpSwagger "github.com/swaggo/http-swagger/v2"
 )
 
 type Route struct {
@@ -44,5 +47,11 @@ var routes = Routes{
 		"DELETE",
 		"/cars/{regNum}",
 		handlers.DeleteCar,
+	},
+	Route{
+		"swagger",
+		"GET",
+		"/swagger/",
+		httpSwagger.Handler(httpSwagger.URL("http://localhost:8080/swagger/doc.json")),
 	},
 }
