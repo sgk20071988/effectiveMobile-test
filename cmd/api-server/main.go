@@ -1,6 +1,11 @@
 //go:generate swagger generate spec
 
-// Package classification effective-mobile-test API.
+//	Schemes: http, https
+//	Host: localhost:3000
+//	BasePath: /v1
+//	Version: 0.0.1
+//	License: MIT http://opensource.org/licenses/MIT
+//	Contact: Georg <sgk1988@yandex.ru>
 //
 //	Consumes:
 //	- application/json
@@ -31,7 +36,6 @@ func main() {
 		fmt.Print(err)
 		return
 	}
-	// urlExample := "postgres://username:password@localhost:5432/database_name"
 	dbType := os.Getenv("DB_TYPE")
 	dbDriver := os.Getenv("DB_DRIVER")
 	dbUser := os.Getenv("DB_USER")
