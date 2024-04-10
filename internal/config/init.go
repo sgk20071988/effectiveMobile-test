@@ -3,7 +3,7 @@ package config
 import "github.com/joho/godotenv"
 
 func Init() error {
-	err := godotenv.Load("D:\\Go\\effectiveMobile-test\\app.env")
+	err := godotenv.Load("../../app.env")
 	if err != nil {
 		return err
 	}
