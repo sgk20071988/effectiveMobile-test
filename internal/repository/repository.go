@@ -27,6 +27,41 @@ func (r *Repository) Insert(car model.Car) error {
 	return nil
 }
 
+func (r *Repository) GetCar(regNum string) (car model.Car, e error) {
+	sb := sqlbuilder.PostgreSQL.NewSelectBuilder()
+	sb.From("Cars")
+	sb.Select("regNum", "mark", "model", "owner")
+	sb.Where(
+		sb.Like("regNum", regNum),
+	)
+	query, args := sb.Build()
+
+	rows, err := r.DB.Query(
+		query,
+		args,
+	)
+
+	if err != nil {
+		e = err
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		if err := rows.Scan(
+			&car.RegNum,
+			&car.Mark,
+			&car.Model,
+			&car.Owner,
+		); err != nil {
+			e = err
+			return
+		}
+	}
+	return
+
+}
+
 func (r *Repository) GetCars(params map[string]string, filters map[string]string) (cars []model.Car, e error) {
 	sb := sqlbuilder.PostgreSQL.NewSelectBuilder()
 	sb.From("Cars")

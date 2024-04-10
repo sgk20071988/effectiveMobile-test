@@ -1,3 +1,14 @@
+//go:generate swagger generate spec
+
+// Package classification effective-mobile-test API.
+//
+//	Consumes:
+//	- application/json
+//
+//	Produces:
+//	- application/json
+//
+// swagger:meta
 package main
 
 import (
@@ -43,13 +54,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	/*
-		pingErr := db.Ping()
-		if pingErr != nil {
-			panic(pingErr)
-		}
-		fmt.Println("Connected!")
-	*/
+
 	goose.SetBaseFS(embedMigrations)
 
 	if err := goose.SetDialect(dbType); err != nil {

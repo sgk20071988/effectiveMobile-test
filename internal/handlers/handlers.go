@@ -2,7 +2,6 @@ package handlers
 
 import (
 	context "effectiveMobileTest/internal/context"
-	"effectiveMobileTest/internal/db"
 	"effectiveMobileTest/internal/model"
 	repository "effectiveMobileTest/internal/repository"
 	"encoding/json"
@@ -13,6 +12,29 @@ import (
 )
 
 func GetCars(w http.ResponseWriter, r *http.Request) {
+	// swagger:route GET /cars cars listCar
+	//
+	// Lists of cars with pagination.
+	//
+	// This will show all recorded people.
+	//
+	//     Consumes:
+	//     - application/json
+	//
+	//     Produces:
+	//     - application/json
+	//
+	//     Schemes: http, https
+	//
+	//     Params:
+	//     limit: limit
+	//     offset: offset
+	//     filters: filters
+	//
+	//     Responses:
+	//       200: carsResponse
+	//       400: bad request
+	//       500: bad connection
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	filters := map[string]string{}
 	err := json.Unmarshal([]byte(r.URL.Query().Get("filters")), &filters)
@@ -46,6 +68,24 @@ func GetCars(w http.ResponseWriter, r *http.Request) {
 }
 
 func InsertCar(w http.ResponseWriter, r *http.Request) {
+	// swagger:route POST /cars/ cars listCars
+	//
+	// Insert new car in cars list.
+	//
+	//     Consumes:
+	//     - application/json
+	//
+	//     Produces:
+	//     - application/json
+	//
+	//     Schemes: http, https
+	//
+	//     Params:
+	//
+	//     Responses:
+	//       200: carResponse
+	//       400: bad request
+	//       500: bad connection
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	decoder := json.NewDecoder(r.Body)
 	var car model.Car
@@ -68,6 +108,25 @@ func InsertCar(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateCar(w http.ResponseWriter, r *http.Request) {
+	// swagger:route PATCH /cars/{regNum} cars listCars
+	//
+	// Update row with identified registration number.
+	//
+	//     Consumes:
+	//     - application/json
+	//
+	//     Produces:
+	//     - application/json
+	//
+	//     Schemes: http, https
+	//
+	//     Params:
+	//       regNum: regNum
+	//
+	//     Responses:
+	//       200: carResponse
+	//       400: bad request
+	//       500: bad connection
 	params := mux.Vars(r)
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	regNum, ok := params["regNum"]
@@ -88,10 +147,34 @@ func UpdateCar(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	carRep := repository.Repository{DB: db}
-	carRep.Update(regNum, params)
+	err = carRep.Update(regNum, params)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
 }
 
 func DeleteCar(w http.ResponseWriter, r *http.Request) {
+	// swagger:route DELETE /cars/{regNum} cars listCars
+	//
+	// Delete row with identified registration number.
+	//
+	//     Consumes:
+	//     - application/json
+	//
+	//     Produces:
+	//     - application/json
+	//
+	//     Schemes: http, https
+	//
+	//     Params:
+	//       regNum: regNum
+	//
+	//     Responses:
+	//       200: carResponse
+	//       400: bad request
+	//       500: bad connection
 	params := mux.Vars(r)
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	regNum, ok := params["regNum"]
@@ -105,26 +188,57 @@ func DeleteCar(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	carRep := repository.Repository{DB: db}
-	carRep.DeleteCar(regNum)
+	err = carRep.DeleteCar(regNum)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
 }
 
 func GetCar(w http.ResponseWriter, r *http.Request) {
+	// swagger:route GET /cars/{regNum} cars listCar
+	//
+	// Lists of cars with pagination.
+	//
+	// This will show the record of an identified registration number.
+	//
+	//     Consumes:
+	//     - application/json
+	//
+	//     Produces:
+	//     - application/json
+	//
+	//     Schemes: http, https
+	//
+	//     Params:
+	//       regNum: regNum
+	//
+	//     Responses:
+	//       200: carResponse
+	//       404: jsonError
+	//       500: bad connection
 	params := mux.Vars(r)
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	for _, item := range db.Get() {
-		if item.RegNum == params["regNum"] {
-			w.WriteHeader(http.StatusOK)
-			// add a arbitraty pause of 1 second
-			time.Sleep(1000 * time.Millisecond)
-			if err := json.NewEncoder(w).Encode(item); err != nil {
-				panic(err)
-			}
-			return
+	db, err := context.GetDB()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	carRep := repository.Repository{DB: db}
+	car, err := carRep.GetCar(params["regNum"])
+
+	if err != nil {
+		// If we didn't find it, 404
+		w.WriteHeader(http.StatusNotFound)
+		if err := json.NewEncoder(w).Encode(jsonError{Message: "Not Found"}); err != nil {
+			panic(err)
 		}
 	}
-	// If we didn't find it, 404
-	w.WriteHeader(http.StatusNotFound)
-	if err := json.NewEncoder(w).Encode(jsonError{Message: "Not Found"}); err != nil {
+
+	w.WriteHeader(http.StatusOK)
+	time.Sleep(1000 * time.Millisecond)
+	if err := json.NewEncoder(w).Encode(car); err != nil {
 		panic(err)
 	}
 }
