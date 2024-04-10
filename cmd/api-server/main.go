@@ -79,5 +79,7 @@ func main() {
 
 	r := router.NewRouter()
 
+	fmt.Println("start")
+
 	http.ListenAndServe(":8080", r)
 }

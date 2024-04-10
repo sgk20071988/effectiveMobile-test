@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 	model "effectiveMobileTest/internal/model"
+	"fmt"
 	"strconv"
 
 	"github.com/huandu/go-sqlbuilder"
@@ -32,9 +33,11 @@ func (r *Repository) GetCar(regNum string) (car model.Car, e error) {
 	sb.From("Cars")
 	sb.Select("regNum", "mark", "model", "owner")
 	sb.Where(
-		sb.Like("regNum", regNum),
+		sb.Equal("regNum", regNum),
 	)
 	query, args := sb.Build()
+
+	fmt.Println(query, args)
 
 	rows, err := r.DB.Query(
 		query,

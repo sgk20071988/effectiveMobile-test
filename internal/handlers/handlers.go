@@ -5,6 +5,7 @@ import (
 	"effectiveMobileTest/internal/model"
 	repository "effectiveMobileTest/internal/repository"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -12,6 +13,7 @@ import (
 )
 
 func GetCars(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("get cars")
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	filters := map[string]string{}
 	err := json.Unmarshal([]byte(r.URL.Query().Get("filters")), &filters)
@@ -45,6 +47,7 @@ func GetCars(w http.ResponseWriter, r *http.Request) {
 }
 
 func InsertCar(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("insert car")
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	decoder := json.NewDecoder(r.Body)
 	var car model.Car
@@ -67,6 +70,7 @@ func InsertCar(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateCar(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("update car")
 	params := mux.Vars(r)
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	regNum, ok := params["regNum"]
@@ -96,6 +100,7 @@ func UpdateCar(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteCar(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("delete car")
 	params := mux.Vars(r)
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	regNum, ok := params["regNum"]
@@ -118,6 +123,7 @@ func DeleteCar(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetCar(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("get car")
 	params := mux.Vars(r)
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	db, err := context.GetDB()
