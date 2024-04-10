@@ -1,19 +1,3 @@
-//go:generate swagger generate spec
-
-//	Schemes: http, https
-//	Host: localhost:3000
-//	BasePath: /v1
-//	Version: 0.0.1
-//	License: MIT http://opensource.org/licenses/MIT
-//	Contact: Georg <sgk1988@yandex.ru>
-//
-//	Consumes:
-//	- application/json
-//
-//	Produces:
-//	- application/json
-//
-// swagger:meta
 package main
 
 import (
@@ -29,6 +13,26 @@ import (
 
 //go:embed migrations/*.sql
 var embedMigrations embed.FS
+
+// @title           Swagger Example API
+// @version         1.0
+// @description     This is a test task effetive-mobile.
+// @termsOfService
+
+// @contact.name   API Support
+// @contact.url    http://www.swagger.io/support
+// @contact.email  sgk1988@yandex.ru
+
+// @license.name  Apache 2.0
+// @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host      localhost:8080
+// @BasePath  /api/v1
+
+// @securityDefinitions.basic  BasicAuth
+
+// @externalDocs.description  OpenAPI
+// @externalDocs.url          https://swagger.io/resources/open-api/
 
 func main() {
 	err := config.Init()
