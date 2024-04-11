@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	_ "effectiveMobileTest/cmd/api-server/docs"
 	context "effectiveMobileTest/internal/context"
 	"effectiveMobileTest/internal/model"
 	repository "effectiveMobileTest/internal/repository"
@@ -121,6 +122,18 @@ func DeleteCar(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
+// GetCar godoc
+// @Summary      Show car
+// @Description  get string by regNum
+// @Tags         cars
+// @Accept       json
+// @Produce      json
+// @Param        regNum   path      int  true  "Car registration number"
+// @Success      200  {object}  model.Car
+// @Failure      400  {object}  httputil.HTTPError
+// @Failure      404  {object}  httputil.HTTPError
+// @Failure      500  {object}  httputil.HTTPError
+// @Router       /cars/{regNum} [get]
 func GetCar(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")

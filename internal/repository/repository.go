@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/huandu/go-sqlbuilder"
+	log "github.com/sirupsen/logrus"
 )
 
 type Repository struct {
@@ -18,6 +19,7 @@ func (r *Repository) Insert(car model.Car) error {
 	queryBuilder.Cols("mark", "model", "owner", "regNum")
 	queryBuilder.Values(car.Mark, car.Model, car.Owner, car.RegNum)
 	sql, args := queryBuilder.Build()
+	log.Debug(sql, args)
 	if _, err := r.DB.Exec(
 		sql,
 		args,
@@ -35,7 +37,7 @@ func (r *Repository) GetCar(regNum string) (car model.Car, e error) {
 		sb.Equal("regNum", regNum),
 	)
 	query, args := sb.Build()
-
+	log.Debug(query, args)
 	rows, err := r.DB.Query(
 		query,
 		args,
@@ -92,7 +94,7 @@ func (r *Repository) GetCars(params map[string]string, filters map[string]string
 		)
 	}
 	query, args := sb.Build()
-
+	log.Debug(query, args)
 	rows, err := r.DB.Query(
 		query,
 		args,
@@ -126,6 +128,7 @@ func (r *Repository) DeleteCar(regNum string) error {
 		db.EQ("regNum", regNum),
 	)
 	query, args := db.Build()
+	log.Debug(query, args)
 	if _, err := r.DB.Exec(
 		query,
 		args,
@@ -147,6 +150,7 @@ func (r *Repository) Update(regNum string, update map[string]string) error {
 		ub.Equal("regNum", regNum),
 	)
 	query, args := ub.Build()
+	log.Debug(query, args)
 	if _, err := r.DB.Exec(
 		query,
 		args,

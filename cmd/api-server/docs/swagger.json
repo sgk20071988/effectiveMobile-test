@@ -14,8 +14,8 @@
         },
         "version": "1.0"
     },
-    "host": "localhost:8080",
-    "basePath": "/api/v1",
+    "host": "localhost:1223",
+    "basePath": "/",
     "paths": {},
     "securityDefinitions": {
         "BasicAuth": {

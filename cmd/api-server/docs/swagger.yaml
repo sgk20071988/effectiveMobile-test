@@ -1,8 +1,8 @@
-basePath: /api/v1
+basePath: /
 externalDocs:
   description: OpenAPI
   url: https://swagger.io/resources/open-api/
-host: localhost:8080
+host: localhost:1223
 info:
   contact:
     email: sgk1988@yandex.ru
