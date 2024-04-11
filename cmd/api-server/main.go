@@ -86,6 +86,10 @@ func main() {
 
 	r := router.NewRouter()
 
-	http.ListenAndServe(":1223", r)
-	log.Info("Server started")
+	err = http.ListenAndServe(":1223", r)
+	if err != nil {
+		panic(err)
+	} else {
+		log.Info("Server started")
+	}
 }
