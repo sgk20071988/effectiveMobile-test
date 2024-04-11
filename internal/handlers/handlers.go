@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"time"
 
 	"github.com/gorilla/mux"
 )
@@ -123,7 +122,6 @@ func DeleteCar(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetCar(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("get car")
 	params := mux.Vars(r)
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	db, err := context.GetDB()
@@ -139,10 +137,10 @@ func GetCar(w http.ResponseWriter, r *http.Request) {
 		if err := json.NewEncoder(w).Encode(jsonError{Message: "Not Found"}); err != nil {
 			panic(err)
 		}
+		return
 	}
 
 	w.WriteHeader(http.StatusOK)
-	time.Sleep(1000 * time.Millisecond)
 	if err := json.NewEncoder(w).Encode(car); err != nil {
 		panic(err)
 	}

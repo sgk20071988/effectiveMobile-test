@@ -3,7 +3,6 @@ package repository
 import (
 	"database/sql"
 	model "effectiveMobileTest/internal/model"
-	"fmt"
 	"strconv"
 
 	"github.com/huandu/go-sqlbuilder"
@@ -37,8 +36,6 @@ func (r *Repository) GetCar(regNum string) (car model.Car, e error) {
 	)
 	query, args := sb.Build()
 
-	fmt.Println(query, args)
-
 	rows, err := r.DB.Query(
 		query,
 		args,
@@ -46,6 +43,7 @@ func (r *Repository) GetCar(regNum string) (car model.Car, e error) {
 
 	if err != nil {
 		e = err
+		return
 	}
 
 	defer rows.Close()
